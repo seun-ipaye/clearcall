@@ -1,0 +1,106 @@
+:root {
+  --color-bg: #f2f3f0;
+  --color-surface: #ffffff;
+  --color-border: #ccd0c9;
+  --color-border-strong: #a8ada4;
+  --color-text: #1c1e1b;
+  --color-text-muted: #55594f;
+  --color-primary: #1e4a3d;
+  --color-primary-dark: #122f26;
+  --color-primary-tint: #e6ede8;
+  --color-accent: #8a5a1e;
+  --color-danger: #8c3a2e;
+  --color-success: #3f7d4a;
+
+  --font-sans: Arial, Helvetica, "Segoe UI", sans-serif;
+
+  --radius: 2px;
+
+  color-scheme: light;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+h1 {
+  font-size: 20px;
+}
+
+h2 {
+  font-size: 16px;
+}
+
+h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-muted);
+}
+
+p {
+  margin: 0 0 8px 0;
+}
+
+a {
+  color: var(--color-primary);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--color-border);
+  font-variant-numeric: tabular-nums;
+}
+
+th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border-strong);
+  white-space: nowrap;
+}
+
+button {
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--color-primary-tint);
+}
