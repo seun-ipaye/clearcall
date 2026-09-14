@@ -1,5 +1,5 @@
 from collections import Counter, defaultdict
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -103,6 +103,78 @@ def by_client():
         )
 
     return sorted(results, key=lambda r: r.count, reverse=True)
+
+
+class SentimentTrendPoint(BaseModel):
+    period: str
+    avg_sentiment: float
+    call_count: int
+
+
+class HighRiskCall(BaseModel):
+    call_id: str
+    client: str
+    call_reason: str
+    escalation_risk_flag: str
+    sentiment_score: Optional[float]
+    complexity_score: Optional[float]
+
+
+class TranscriptInsights(BaseModel):
+    total_calls: int
+    scored_calls: int
+    avg_sentiment: Optional[float]
+    avg_complexity: Optional[float]
+    sentiment_trend: List[SentimentTrendPoint]
+    risk_distribution: dict
+    high_risk_calls: List[HighRiskCall]
+
+
+@router.get("/transcript-insights", response_model=TranscriptInsights)
+def transcript_insights():
+    calls = load_calls()
+    scored = [c for c in calls if c.sentiment_score is not None]
+    complexity_scored = [c for c in calls if c.complexity_score is not None]
+
+    trend_groups: dict[str, list] = defaultdict(list)
+    for c in scored:
+        period = c.timestamp.strftime("%Y-%m")
+        trend_groups[period].append(c.sentiment_score)
+
+    sentiment_trend = [
+        SentimentTrendPoint(
+            period=period,
+            avg_sentiment=round(sum(scores) / len(scores), 3),
+            call_count=len(scores),
+        )
+        for period, scores in sorted(trend_groups.items())
+    ]
+
+    risk_distribution = Counter(c.escalation_risk_flag or "unscored" for c in calls)
+    high_risk_calls = [
+        HighRiskCall(
+            call_id=c.call_id,
+            client=c.client,
+            call_reason=c.call_reason,
+            escalation_risk_flag=c.escalation_risk_flag,
+            sentiment_score=c.sentiment_score,
+            complexity_score=c.complexity_score,
+        )
+        for c in calls
+        if c.escalation_risk_flag == "high"
+    ]
+
+    return TranscriptInsights(
+        total_calls=len(calls),
+        scored_calls=len(scored),
+        avg_sentiment=round(sum(c.sentiment_score for c in scored) / len(scored), 3) if scored else None,
+        avg_complexity=round(sum(c.complexity_score for c in complexity_scored) / len(complexity_scored), 3)
+        if complexity_scored
+        else None,
+        sentiment_trend=sentiment_trend,
+        risk_distribution=dict(risk_distribution),
+        high_risk_calls=high_risk_calls,
+    )
 
 
 class ReasonCount(BaseModel):
