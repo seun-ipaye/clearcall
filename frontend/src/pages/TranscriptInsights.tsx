@@ -15,6 +15,7 @@ import Panel from '../components/Panel'
 import StatCard from '../components/StatCard'
 import { useApi } from '../hooks/useApi'
 import { COLORS, tooltipStyle } from '../theme'
+import { ErrorState, LoadingState } from '../components/Status'
 
 const RISK_ORDER = ['low', 'medium', 'high', 'unscored']
 const RISK_COLORS: Record<string, string> = {
@@ -31,8 +32,8 @@ function TranscriptInsights() {
     <div>
       <h2>Transcript Insights</h2>
 
-      {loading && <p style={{ color: 'var(--color-text-muted)' }}>Loading...</p>}
-      {error && <p style={{ color: 'var(--color-danger)' }}>Failed to load transcript insights: {error}</p>}
+      {loading && <LoadingState />}
+      {error && <ErrorState message={error} />}
 
       {data && data.scored_calls === 0 && (
         <Panel title="Analysis Pending">
@@ -116,6 +117,7 @@ function TranscriptInsights() {
             {data.high_risk_calls.length === 0 ? (
               <p style={{ color: 'var(--color-text-muted)' }}>No calls currently flagged as high risk.</p>
             ) : (
+              <div className="table-scroll">
               <table>
                 <thead>
                   <tr>
@@ -138,6 +140,7 @@ function TranscriptInsights() {
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
           </Panel>
         </div>

@@ -4,6 +4,7 @@ import Panel from '../components/Panel'
 import { useApi } from '../hooks/useApi'
 import { COLORS, tooltipStyle } from '../theme'
 import { formatPercent } from '../utils/format'
+import { ErrorState, LoadingState } from '../components/Status'
 
 function ByClient() {
   const { data, loading, error } = useApi(getClientStats, [])
@@ -12,8 +13,8 @@ function ByClient() {
     <div>
       <h2>By Client</h2>
 
-      {loading && <p style={{ color: 'var(--color-text-muted)' }}>Loading...</p>}
-      {error && <p style={{ color: 'var(--color-danger)' }}>Failed to load client stats: {error}</p>}
+      {loading && <LoadingState />}
+      {error && <ErrorState message={error} />}
 
       {data && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -39,7 +40,7 @@ function ByClient() {
                     <CartesianGrid stroke={COLORS.border} vertical={false} />
                     <XAxis dataKey="client" tick={{ fontSize: 10 }} interval={0} angle={-20} textAnchor="end" height={50} />
                     <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => formatPercent(v, 0)} />
-                    <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => formatPercent(value)} />
+                    <Tooltip contentStyle={tooltipStyle} formatter={(value) => formatPercent(Number(value))} />
                     <Bar dataKey="web_help_rate" name="Web help rate" fill={COLORS.accent} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -53,7 +54,7 @@ function ByClient() {
                     <CartesianGrid stroke={COLORS.border} vertical={false} />
                     <XAxis dataKey="client" tick={{ fontSize: 10 }} interval={0} angle={-20} textAnchor="end" height={50} />
                     <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => formatPercent(v, 0)} />
-                    <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => formatPercent(value)} />
+                    <Tooltip contentStyle={tooltipStyle} formatter={(value) => formatPercent(Number(value))} />
                     <Bar dataKey="escalation_rate" name="Escalation rate" fill={COLORS.danger} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -62,6 +63,7 @@ function ByClient() {
           </div>
 
           <Panel title="Client Summary">
+            <div className="table-scroll">
             <table>
               <thead>
                 <tr>
@@ -86,6 +88,7 @@ function ByClient() {
                 ))}
               </tbody>
             </table>
+            </div>
           </Panel>
         </div>
       )}

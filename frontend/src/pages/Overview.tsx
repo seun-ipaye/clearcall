@@ -2,6 +2,7 @@ import { getOverviewStats } from '../api/client'
 import StatCard from '../components/StatCard'
 import { useApi } from '../hooks/useApi'
 import { formatDuration, formatPercent } from '../utils/format'
+import { ErrorState, LoadingState } from '../components/Status'
 
 function Overview() {
   const { data, loading, error } = useApi(getOverviewStats, [])
@@ -10,8 +11,8 @@ function Overview() {
     <div>
       <h2>Overview</h2>
 
-      {loading && <p style={{ color: 'var(--color-text-muted)' }}>Loading...</p>}
-      {error && <p style={{ color: 'var(--color-danger)' }}>Failed to load overview stats: {error}</p>}
+      {loading && <LoadingState />}
+      {error && <ErrorState message={error} />}
 
       {data && (
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>

@@ -14,6 +14,7 @@ import { useApi } from '../hooks/useApi'
 import { COLORS, tooltipStyle } from '../theme'
 import { formatDuration, formatPercent } from '../utils/format'
 import type { ReasonStats } from '../api/types'
+import { ErrorState, LoadingState } from '../components/Status'
 
 const TOP_N = 10
 
@@ -34,8 +35,8 @@ function ByReason() {
     <div>
       <h2>By Call Reason</h2>
 
-      {loading && <p style={{ color: 'var(--color-text-muted)' }}>Loading...</p>}
-      {error && <p style={{ color: 'var(--color-danger)' }}>Failed to load reason stats: {error}</p>}
+      {loading && <LoadingState />}
+      {error && <ErrorState message={error} />}
 
       {data && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -74,7 +75,7 @@ function ByReason() {
                     <YAxis type="category" dataKey="call_reason" width={200} tick={{ fontSize: 11 }} />
                     <Tooltip
                       contentStyle={tooltipStyle}
-                      formatter={(value: number) => formatDuration(value)}
+                      formatter={(value) => formatDuration(Number(value))}
                     />
                     <Bar dataKey="avg_duration_seconds" name="Avg duration" fill={COLORS.accent} />
                   </BarChart>
@@ -97,7 +98,7 @@ function ByReason() {
                       tickFormatter={(v) => formatPercent(v, 0)}
                     />
                     <YAxis type="category" dataKey="call_reason" width={200} tick={{ fontSize: 11 }} />
-                    <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => formatPercent(value)} />
+                    <Tooltip contentStyle={tooltipStyle} formatter={(value) => formatPercent(Number(value))} />
                     <Bar dataKey="escalation_rate" name="Escalation rate">
                       {topBy(data, 'escalation_rate', 8).map((row) => (
                         <Cell key={row.call_reason} fill={riskColor(row.escalation_rate)} />
@@ -110,6 +111,7 @@ function ByReason() {
           </div>
 
           <Panel title="All Call Reasons">
+            <div className="table-scroll">
             <table>
               <thead>
                 <tr>
@@ -132,6 +134,7 @@ function ByReason() {
                 ))}
               </tbody>
             </table>
+            </div>
           </Panel>
         </div>
       )}

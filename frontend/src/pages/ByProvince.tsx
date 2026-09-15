@@ -4,6 +4,7 @@ import Panel from '../components/Panel'
 import { useApi } from '../hooks/useApi'
 import { COLORS, tooltipStyle } from '../theme'
 import { formatPercent } from '../utils/format'
+import { ErrorState, LoadingState } from '../components/Status'
 
 function ByProvince() {
   const { data, loading, error } = useApi(getProvinceStats, [])
@@ -12,8 +13,8 @@ function ByProvince() {
     <div>
       <h2>By Province</h2>
 
-      {loading && <p style={{ color: 'var(--color-text-muted)' }}>Loading...</p>}
-      {error && <p style={{ color: 'var(--color-danger)' }}>Failed to load province stats: {error}</p>}
+      {loading && <LoadingState />}
+      {error && <ErrorState message={error} />}
 
       {data && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -34,6 +35,7 @@ function ByProvince() {
           </Panel>
 
           <Panel title="Province Detail">
+            <div className="table-scroll">
             <table>
               <thead>
                 <tr>
@@ -56,6 +58,7 @@ function ByProvince() {
                 ))}
               </tbody>
             </table>
+            </div>
           </Panel>
         </div>
       )}

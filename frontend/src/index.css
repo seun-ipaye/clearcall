@@ -95,6 +95,14 @@ th {
   white-space: nowrap;
 }
 
+tbody tr:hover {
+  background: var(--color-primary-tint);
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
 button {
   font-family: inherit;
   font-size: 13px;
@@ -103,4 +111,10 @@ button {
 
 ::selection {
   background: var(--color-primary-tint);
+}
+
+@media (max-width: 560px) {
+  .header-subtitle {
+    display: none;
+  }
 }
