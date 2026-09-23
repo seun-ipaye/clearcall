@@ -29,7 +29,7 @@ random.seed(SEED)
 fake = Faker("en_CA")
 Faker.seed(SEED)
 
-NUM_RECORDS = 200
+NUM_RECORDS = 1000
 OUTPUT_PATH = Path(__file__).resolve().parent.parent / "data" / "calls.json"
 
 CLIENTS = ["GreenShield", "RBC Insurance", "Wawanesa", "Victor Insurance", "Entente"]
