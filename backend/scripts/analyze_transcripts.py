@@ -16,6 +16,7 @@ import argparse
 import json
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -70,6 +71,8 @@ def main():
         return
 
     print(f"Analyzing {len(pending)} of {len(calls)} calls...")
+    print(f"Started at {datetime.now():%Y-%m-%d %H:%M:%S}")
+    start_time = time.perf_counter()
 
     succeeded = 0
     failed = 0
@@ -98,7 +101,13 @@ def main():
         with open(DATA_PATH, "w") as f:
             json.dump(calls, f, indent=2)
 
+    elapsed = time.perf_counter() - start_time
+    minutes, seconds = divmod(elapsed, 60)
     print(f"\nDone. {succeeded} succeeded, {failed} failed.")
+    print(f"Finished at {datetime.now():%Y-%m-%d %H:%M:%S}")
+    print(f"Total processing time: {int(minutes)}m {seconds:.1f}s")
+    if succeeded:
+        print(f"Average per call: {elapsed / succeeded:.2f}s")
 
 
 if __name__ == "__main__":
